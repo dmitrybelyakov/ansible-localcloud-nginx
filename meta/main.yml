@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Dmitry Belaykov
+  description: This role will install nginx and allow you to easily manage your virtual hosts via yaml config offering extensibility of applying configuration templates. Comes with simple virtual host template as well as ones for common app deployments, such as Symfony 1& 2 (production/development), Wordpress or generic PHP apps. More templates will be added later and you can always use your own!
+  license: MIT
+  min_ansible_version: 1.2
+  platforms:
+  - name: Ubuntu
+    versions:
+    - trusty
+  categories:
+  - development
+  - system
+  - web
+dependencies:
+  - dmitrybelyakov.localcloud-common
+  - dmitrybelyakov.localcloud-php
+
