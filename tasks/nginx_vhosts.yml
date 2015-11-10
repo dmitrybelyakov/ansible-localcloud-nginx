@@ -1,12 +1,5 @@
 ---
 
-- name: remove default host and its symlink
-  file: path='{{item}}' state=absent
-  with_items:
-    - /etc/nginx/sites-available/default
-    - /etc/nginx/sites-enabled/default
-
-
 # create backup
 - name: create backup directory
   file: path=/etc/nginx/LIVE_BACKUP state=directory
