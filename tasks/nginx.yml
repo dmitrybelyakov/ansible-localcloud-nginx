@@ -1,0 +1,38 @@
+---
+
+- name: add nginx repo
+  apt_repository: repo='ppa:nginx/stable'
+
+- name: install nginx
+  apt: pkg=nginx state=installed
+  notify:
+    - restart nginx
+
+- name: ensure nginx starts at boot
+  service: name=nginx state=started enabled=yes
+
+- name: open port 80
+  ufw: rule=allow port=80 proto=tcp
+
+- name: open port 443
+  ufw: rule=allow port=443 proto=tcp
+
+- name: get nginx.conf backup stats
+  stat: path=/etc/nginx/nginx.conf.original.bak follow=False
+  register: nginx_config_backup
+
+- name: backup nginx.conf (if required)
+  notify: restart nginx
+  shell: mv /etc/nginx/nginx.conf /etc/nginx/nginx.conf.original.bak
+  when: nginx_manage_config and nginx_config_backup.stat.exists == False
+
+- name: get nginx.conf stats
+  stat: path=/etc/nginx/nginx.conf follow=False
+  register: nginx_config
+
+
+- name: copy nginx.conf to server (if required)
+  notify: restart nginx
+  template: src=nginx.conf dest=/etc/nginx/nginx.conf
+  when: nginx_manage_config and nginx_config.stat.exists == False or nginx_overwrite_config
+

@@ -1,0 +1,11 @@
+{% if 'listen' not in item.value.keys() %}
+    listen 80;
+{% endif %}
+
+{% if 'listen' in item.value.keys() %}
+{% for listen in item.value.listen %}
+    listen {{listen}};
+{% endfor %}
+{% endif %}
+
+

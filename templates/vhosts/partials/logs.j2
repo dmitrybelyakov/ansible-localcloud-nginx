@@ -1,0 +1,19 @@
+
+{% if 'error_log' in item.value.keys() %}
+{% if not item.value.error_log %}
+    error_log off;
+{% else %}
+    error_log {{ item.value.error_log }};
+{% endif %}
+{% else %}
+    error_log /var/log/nginx/{{ item.key }}.error.log;
+{% endif %}
+{% if 'access_log' in item.value.keys() %}
+{% if not item.value.access_log %}
+    access_log off;
+{% else %}
+    access_log {{ item.value.access_log }};
+{% endif %}
+{% else %}
+    access_log off;
+{% endif %}

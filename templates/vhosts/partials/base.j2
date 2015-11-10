@@ -1,0 +1,23 @@
+server {
+    {% include 'partials/listen.j2' %}
+    {% include 'partials/ssl.j2' %}
+
+    {%- if 'index' in item.value %}index {{ item.value.index }};{% endif %}
+
+    {% if 'document_root' in item.value %}root {{item.value.document_root}};{% else %}root /home/{{ box_user }}/{{ item.key }};{% endif %}
+
+    server_name {{item.value.server_name}};
+    server_tokens off;
+
+    {% include 'partials/logs.j2' %}
+
+    location ~ /\.(ht|svn|git) { deny  all; }
+
+    ############ custom configuration follows ############
+
+    {% block config %}
+    location / {
+        try_files $uri $uri/ =404;
+    }
+    {% endblock config %}
+}

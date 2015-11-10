@@ -1,38 +1,100 @@
-Role Name
+localcloud-nginx
 =========
 
-A brief description of the role goes here.
+This role will install nginx and allow you to easily manage your virtual hosts via yaml config offering extensibility of applying configuration templates.
+Comes with simple virtual host template as well as ones for common app deployments, such as Symfony 1& 2 (production/development), Wordpress or generic PHP apps. More templates will be added later and you can always use your own!
+Additionally this role can upload SSL/TLS certificates and enable HTTPS support for managed virtual hosts.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
-
-Role Variables
---------------
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+An Ubuntu 14 LTS box.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+This role depends on [localcloud-common](https://github.com/dmitrybelyakov/ansible-localcloud-common) and [localcloud-php](https://github.com/dmitrybelyakov/ansible-localcloud-php) roles to be
+in place.
+
+Role Variables
+--------------
+
+`nginx_manage_config`
+Default: True. Whether to allow Ansible to manage nginx config.
+
+`nginx_manage_vhosts`
+Default: True.  Whether to allow Ansible to manage virtual hosts configuration.
+
+
+`vhost_templates`
+Default: 'roles/localcloud-nginx/templates/vhosts'. Path to default virtual hosts templates.
+
+`vhosts`
+Default: []. A dictionary of virtual hosts configuration. Will be compiled into nginx configuration. See section below.
+
+
+Virtual hosts config example
+----------------
+
+You are not required to have any virtual hosts configuration, so you can manage your virtual hosts manually. But it's actually very convenient to do so because you end up with a reproducible set of configuration instructions.
+To manage virtual hosts make sure the `nginx_manage_vhosts` is on, and then define you virtual hosts configuration in a `vhosts` block.
+You can either define it directly in you playbook, or have it as included config file with is more convenient.
+
+For example:
+```yml
+#  main playbook
+
+- hosts: all
+  roles:
+    - localcloud-nginx
+
+  pre_tasks:
+    - name: include configs
+      include_vars: '{{item}}'
+      with_items:
+        - config/vhosts.yml
+      tags: always
+```
+
+Your vhosts configuration can then look like this:
+
+```yml
+# config/vhosts.yml
+---
+vhosts:
+
+  # hostname as dict key is a good practice (all configs will be named based on this)
+  sowandgrow.innocentdrinks.com:
+    # template to use, either default one, or your own
+    template: '{{vhost_templates}}/wordpress.j2'
+    listen:
+      - '80'
+
+    # your host names
+    server_name: 'sowandgrow.innocentdrinks.com'
+
+    # your index files
+    index: 'index.html index.php'
+
+    # upload ssl certificates, and enable https for this host, both crt and key required
+    ssl:
+        crt: 'ssl/certificate.crt' # relative to main playbook
+        key: 'ssl/keyfile.key'
+
+
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yml
+- hosts: servers
+  roles:
+     - localcloud-common
+     - localcloud-php
+     - localcloud-nginx
+```
 
 License
 -------
 
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+MIT

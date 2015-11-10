@@ -1,0 +1,126 @@
+---
+
+- name: remove default host and its symlink
+  file: path='{{item}}' state=absent
+  with_items:
+    - /etc/nginx/sites-available/default
+    - /etc/nginx/sites-enabled/default
+
+
+# create backup
+- name: create backup directory
+  file: path=/etc/nginx/LIVE_BACKUP state=directory
+  changed_when: False
+
+- name: backup vhosts
+  shell: 'cp -r /etc/nginx/{{item}} /etc/nginx/LIVE_BACKUP/'
+  with_items: ['sites-available', 'sites-enabled']
+  changed_when: False
+
+
+# create vhosts
+- name: read vhosts
+  shell: (cd /etc/nginx/sites-available; find . -maxdepth 1) | cut -d'/' -f2 | grep -v '^\.'
+  register: remote_vhosts
+  changed_when: False
+
+- name: remove redundant vhosts
+  file: path='/etc/nginx/sites-available/{{item}}' state=absent
+  with_items: remote_vhosts.stdout_lines
+  when: item not in vhosts
+  notify: restart nginx
+
+- name: read vhost symlinks
+  shell: (cd /etc/nginx/sites-enabled; find . -maxdepth 1) | cut -d'/' -f2 | grep -v '^\.'
+  register: remote_vhost_symlinks
+  changed_when: False
+
+- name: remove redundant vhost symlinks
+  file: path='/etc/nginx/sites-enabled/{{item}}' state=absent
+  with_items: remote_vhost_symlinks.stdout_lines
+  when: item not in vhosts
+  notify: restart nginx
+
+- name: create vhost configs
+  with_dict: '{{vhosts}}'
+  notify: restart nginx
+  template:
+    src='{{item.value.template}}'
+    dest='/etc/nginx/sites-available/{{item.key}}'
+
+
+- name: create vhost config symlinks
+  notify: restart nginx
+  with_dict: '{{vhosts}}'
+  file:
+    state=link
+    src=/etc/nginx/sites-available/{{item.key}}
+    dest=/etc/nginx/sites-enabled/{{item.key}}
+
+
+- name: ensure ssl directory present
+  file:
+    path=/home/{{box_user}}/ssl
+    state=directory
+    owner={{box_user}}
+    group=www-data
+    mode=0775
+
+- name: copy over ssl keys if configured
+  notify: restart nginx
+  with_dict: '{{vhosts}}'
+  when: item.value.ssl is defined and item.value.ssl.key is defined
+  copy:
+    src='../../../{{item.value.ssl.key}}'
+    dest=/home/{{box_user}}/ssl/{{item.key}}.key
+    owner={{box_user}}
+    group={{box_user}}
+    mode=0664
+
+- name: copy over ssl certificates if configured
+  notify: restart nginx
+  with_dict: '{{vhosts}}'
+  when: item.value.ssl is defined and item.value.ssl.crt is defined
+  copy:
+    src='../../../{{item.value.ssl.crt}}'
+    dest=/home/{{box_user}}/ssl/{{item.key}}.crt
+    owner={{box_user}}
+    group={{box_user}}
+    mode=0664
+
+
+
+# validate configuration
+- name: validate nginx config
+  shell: "/usr/sbin/nginx -t"
+  register: nginx_test
+  ignore_errors: True
+  changed_when: False
+
+- name: register validation result
+  set_fact: nginx_config_valid='{{'test is successful' in nginx_test.stderr}}'
+  changed_when: False
+
+
+# if failed: rollback
+- name: delete failed vhosts
+  shell: 'rm -rf /etc/nginx/{{item}}'
+  with_items: ['sites-available', 'sites-enabled']
+  when: not nginx_config_valid
+  changed_when: False
+
+- name: roll back vhosts
+  shell: 'mv /etc/nginx/LIVE_BACKUP/{{item}} /etc/nginx/'
+  with_items: ['sites-available', 'sites-enabled']
+  when: not nginx_config_valid
+  changed_when: False
+
+# delete backup
+- name: delete backup on success
+  shell: rm -rf /etc/nginx/LIVE_BACKUP
+  changed_when: False
+
+# explode on failure
+- name: 'ROLLBACK CHANGES: NGINX CONFIG FAILED'
+  fail: msg='{{nginx_test.stderr}}'
+  when: not nginx_config_valid
