@@ -12,7 +12,5 @@ galaxy_info:
   - development
   - system
   - web
-dependencies:
-  - dmitrybelyakov.localcloud-common
-  - dmitrybelyakov.localcloud-php
+dependencies: []
 

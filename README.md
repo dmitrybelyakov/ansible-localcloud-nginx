@@ -13,8 +13,7 @@ An Ubuntu 14 LTS box.
 Dependencies
 ------------
 
-This role depends on [localcloud-common](https://github.com/dmitrybelyakov/ansible-localcloud-common) and [localcloud-php](https://github.com/dmitrybelyakov/ansible-localcloud-php) roles to be
-in place.
+This role has no dependencies.
 
 Role Variables
 --------------
@@ -89,9 +88,9 @@ Example Playbook
 ```yml
 - hosts: servers
   roles:
-     - localcloud-common
-     - localcloud-php
      - localcloud-nginx
+  vars:
+     box_user: username
 ```
 
 License
