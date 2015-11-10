@@ -1,2 +1,6 @@
 ---
-# defaults file for ansible-localcloud-nginx
+nginx_manage_config: True
+nginx_manage_vhosts: True
+
+vhost_templates: 'roles/app-server/templates/vhosts'
+vhosts: []
