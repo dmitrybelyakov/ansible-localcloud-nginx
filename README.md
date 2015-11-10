@@ -80,7 +80,7 @@ vhosts:
     ssl:
         crt: 'ssl/certificate.crt' # relative to main playbook
         key: 'ssl/keyfile.key'
-
+```
 
 
 Example Playbook
