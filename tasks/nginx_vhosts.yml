@@ -16,6 +16,7 @@
   shell: (cd /etc/nginx/sites-available; find . -maxdepth 1) | cut -d'/' -f2 | grep -v '^\.'
   register: remote_vhosts
   changed_when: False
+  ignore_errors: True
 
 - name: remove redundant vhosts
   file: path='/etc/nginx/sites-available/{{item}}' state=absent
@@ -27,6 +28,7 @@
   shell: (cd /etc/nginx/sites-enabled; find . -maxdepth 1) | cut -d'/' -f2 | grep -v '^\.'
   register: remote_vhost_symlinks
   changed_when: False
+  ignore_errors: True
 
 - name: remove redundant vhost symlinks
   file: path='/etc/nginx/sites-enabled/{{item}}' state=absent
