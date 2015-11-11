@@ -2,5 +2,5 @@
 nginx_manage_config: True
 nginx_manage_vhosts: True
 
-vhost_templates: 'roles/app-server/templates/vhosts'
+vhost_templates: 'roles/dmitrybelyakov.localcloud-nginx/templates/vhosts'
 vhosts: {}

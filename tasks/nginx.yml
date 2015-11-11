@@ -34,5 +34,5 @@
 - name: copy nginx.conf to server (if required)
   notify: restart nginx
   template: src=nginx.conf dest=/etc/nginx/nginx.conf
-  when: nginx_manage_config and nginx_config.stat.exists == False or nginx_overwrite_config
+  when: nginx_config.stat.exists == False or nginx_manage_config
 
