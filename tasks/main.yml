@@ -2,3 +2,5 @@
 - include: nginx.yml
 - include: nginx_vhosts.yml
   when: nginx_manage_vhosts
+  tags:
+    - vhosts
