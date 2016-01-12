@@ -1,8 +1,17 @@
-{% extends 'partials/base.j2' %}
-{% block config %}
+server {
+	{% include 'partials/base.j2' %}
 
     location / {
-        try_files $uri $uri/ =404;
+        try_files $uri $uri/ /{{ item.value.index }}$is_args$args;
     }
 
-{% endblock %}
+    location ~ \.php$ {
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_split_path_info ^(.+\.php)(/.*)$;
+        include fastcgi_params;
+        fastcgi_param  SCRIPT_FILENAME  $realpath_root$fastcgi_script_name;
+        fastcgi_param DOCUMENT_ROOT $realpath_root;
+    }
+
+
+}

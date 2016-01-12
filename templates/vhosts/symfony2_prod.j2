@@ -1,5 +1,5 @@
-{% extends 'partials/base.j2' %}
-{% block config %}
+server {
+	{% include 'partials/base.j2' %}
 
     location =/(app.php|config.php) {
         deny  all;
@@ -20,4 +20,4 @@
 
 
 
-{% endblock %}
+}
