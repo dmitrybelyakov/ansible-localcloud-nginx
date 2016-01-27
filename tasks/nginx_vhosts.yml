@@ -93,7 +93,7 @@
   changed_when: False
 
 - name: register validation result
-  set_fact: nginx_config_valid='{{'test is successful' in nginx_test.stderr}}'
+  set_fact: nginx_config_valid="{{'test is successful' in nginx_test.stderr}}"
   changed_when: False
 
 
