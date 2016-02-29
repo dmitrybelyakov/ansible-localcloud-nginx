@@ -74,6 +74,11 @@ vhosts:
 
     # your index files
     index: 'index.html index.php'
+    
+    # fast cgi environment variables
+    fast_cgi_env_vars:
+        APP_ENV: 'production'
+        APP_CACHE: 'on'        
 
     # upload ssl certificates, and enable https for this host, both crt and key required
     ssl:
