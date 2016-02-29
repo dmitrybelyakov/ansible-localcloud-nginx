@@ -3,7 +3,6 @@ server {
 
     location / {
         try_files $uri $uri/ /{{ item.value.index }}$is_args$args;
-        {% include 'partials/env_vars.j2' -%}
     }
 
     location ~ \.php$ {
@@ -12,6 +11,7 @@ server {
         include fastcgi_params;
         fastcgi_param  SCRIPT_FILENAME  $realpath_root$fastcgi_script_name;
         fastcgi_param DOCUMENT_ROOT $realpath_root;
+        {% include 'partials/env_vars.j2' -%}
     }
 
 
