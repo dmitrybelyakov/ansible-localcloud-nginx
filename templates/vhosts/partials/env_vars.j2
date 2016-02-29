@@ -1,6 +1,6 @@
 {% if 'fast_cgi_env_vars' in item.value %}
 
 {%- for property in item.value.fast_cgi_env_vars.keys() -%}
-    fastcgi_param property {{item.value.fast_cgi_env_vars[property]}};
+    fastcgi_param {{property}} {{item.value.fast_cgi_env_vars[property]}};
 {% endfor %}
 {% endif %}
