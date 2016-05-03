@@ -84,6 +84,12 @@ vhosts:
     ssl:
         crt: 'ssl/certificate.crt' # relative to main playbook
         key: 'ssl/keyfile.key'
+        
+    # enable CORS from these URLs
+    cors:
+        origins:
+          - 'https://site1.com'
+          - 'http://site2.com'
 ```
 
 
