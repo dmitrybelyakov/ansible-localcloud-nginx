@@ -2,5 +2,5 @@
 {##}
     listen 443 ssl;
     ssl_certificate /home/{{ box_user }}/ssl/{{item.key}}.crt;
-    ssl_certificate_key /home/innocent/ssl/{{item.key}}.key;
+    ssl_certificate_key /home/{{ box_user }}/ssl/{{item.key}}.key;
 {% endif -%}
