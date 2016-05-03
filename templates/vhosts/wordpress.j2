@@ -3,7 +3,7 @@ server {
 
     location / {
         try_files $uri $uri/ /{{ item.value.index }}$is_args$args;
-
+        {% include 'partials/cors.j2' %}
     }
 
     location ~ \.php$ {
