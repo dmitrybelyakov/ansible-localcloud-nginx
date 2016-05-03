@@ -63,14 +63,14 @@ Your vhosts configuration can then look like this:
 vhosts:
 
   # hostname as dict key is a good practice (all configs will be named based on this)
-  sowandgrow.innocentdrinks.com:
+  your.url.com:
     # template to use, either default one, or your own
     template: '{{vhost_templates}}/wordpress.j2'
     listen:
       - '80'
 
     # your host names
-    server_name: 'sowandgrow.innocentdrinks.com'
+    server_name: 'your.url.com'
 
     # your index files
     index: 'index.html index.php'
