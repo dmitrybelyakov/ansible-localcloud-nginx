@@ -1,5 +1,13 @@
 ---
 
+- name: get rid of default vhost
+  file:
+    path: /etc/nginx/{{item}}
+    state: absent
+  with_items:
+    - sites-available/default
+    - sites-enabled/default
+
 # create backup
 - name: create backup directory
   file: path=/etc/nginx/LIVE_BACKUP state=directory
