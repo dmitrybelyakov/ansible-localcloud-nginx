@@ -19,10 +19,10 @@ Role Variables
 --------------
 
 `nginx_manage_config`
-Default: True. Whether to allow Ansible to manage nginx config.
+Default: False. Whether to allow Ansible to manage nginx config.
 
 `nginx_manage_vhosts`
-Default: True.  Whether to allow Ansible to manage virtual hosts configuration.
+Default: False.  Whether to allow Ansible to manage virtual hosts configuration.
 
 
 `vhost_templates`
