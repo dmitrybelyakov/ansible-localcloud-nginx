@@ -8,7 +8,7 @@ Additionally this role can upload SSL/TLS certificates and enable HTTPS support 
 Requirements
 ------------
 
-An Ubuntu 14 LTS box.
+An Ubuntu LTS box.
 
 Dependencies
 ------------
