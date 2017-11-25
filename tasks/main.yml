@@ -1,6 +1,6 @@
 ---
-- include: nginx.yml
-- include: nginx_vhosts.yml
+- include_tasks: nginx.yml
+- include_tasks: nginx_vhosts.yml
   when: nginx_manage_vhosts
   tags:
     - vhosts
