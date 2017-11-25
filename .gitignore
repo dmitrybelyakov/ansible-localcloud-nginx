@@ -1,0 +1,14 @@
+# OS specific files
+.DS_Store
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.idea
+
+
+
+
+
+
+
