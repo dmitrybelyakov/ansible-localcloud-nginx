@@ -4,7 +4,9 @@
   apt_repository: repo='ppa:nginx/stable'
 
 - name: install nginx
-  apt: pkg=nginx state=installed
+  apt: 
+    pkg: nginx 
+    state: present
   notify:
     - restart nginx
 
